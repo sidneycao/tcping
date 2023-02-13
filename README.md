@@ -1,5 +1,7 @@
 # tcping
-The tcping is similarly to 'ping', but over tcp connection, And written with Golang  
+The tcping is similarly to 'ping', but over tcp connection, And written with Golang.
+  
+```
 Usage:  
   tcping [hostname/ip] [port] [flags]  
 
@@ -16,3 +18,4 @@ Flags:
   -h, --help              help for tcping  
   -i, --interval string   ping interval (default "1s")  
   -t, --timeout string    ping timeout (default "3s")  
+```
