@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"tcping/pinger"
+	"tcping/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -49,7 +49,7 @@ var rCmd = cobra.Command{
 
 func init() {
 	// cmd.Flags().IntVarP(&port, "port", "p", 80, "port")
-	rCmd.Flags().IntVarP(&counters, "counters", "c", pinger.DCounters, "ping counter")
+	rCmd.Flags().IntVarP(&counters, "counters", "c", utils.DCounters, "ping counter")
 	rCmd.Flags().StringVarP(&interval, "interval", "i", "1s", "ping interval")
 	rCmd.Flags().StringVarP(&timeout, "timeout", "t", "3s", "ping timeout")
 }
