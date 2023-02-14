@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"os"
+	"os/signal"
+	"syscall"
 	"tcping/utils"
 
 	"github.com/spf13/cobra"
@@ -26,23 +28,26 @@ var rCmd = cobra.Command{
     > tcping www.google.com 443
   `,
 	Run: func(cmd *cobra.Command, args []string) {
+		var host, port string
 		switch len(args) {
 		case 0:
 			cmd.Usage()
 			return
 		case 1:
-			hostname := args[0]
-			port := 80
-			fmt.Println(hostname, port)
+			host = args[0]
+			port = "80"
 		case 2:
-			hostname := args[0]
-			port := args[1]
-			fmt.Println(hostname, port)
+			host = args[0]
+			port = args[1]
 		default:
 			fmt.Println("invalid arguments!")
 			fmt.Println()
 			cmd.Usage()
+			return
 		}
+		s := make(chan os.Signal, 1)
+		signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
+		t := utils.NewTarget(host, port, timeout, interval, counters)
 
 	},
 }
@@ -50,8 +55,8 @@ var rCmd = cobra.Command{
 func init() {
 	// cmd.Flags().IntVarP(&port, "port", "p", 80, "port")
 	rCmd.Flags().IntVarP(&counters, "counters", "c", utils.DCounters, "ping counter")
-	rCmd.Flags().StringVarP(&interval, "interval", "i", "1s", "ping interval")
-	rCmd.Flags().StringVarP(&timeout, "timeout", "t", "3s", "ping timeout")
+	rCmd.Flags().StringVarP(&interval, "interval, the unit is seconds", "i", "1", "ping interval")
+	rCmd.Flags().StringVarP(&timeout, "timeout, the unit is seconds", "t", "3", "ping timeout")
 }
 
 func main() {
