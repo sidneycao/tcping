@@ -1,5 +1,4 @@
 # tcping
-<!--
 The tcping is similarly to 'ping', but over tcp connection, And written with Golang.
   
 ```
@@ -20,4 +19,3 @@ Flags:
   -i, --interval, the unit is seconds string        ping interval (default "1")
   -t, --timeout, the unit is seconds string         ping timeout (default "3") 
 ```
--->
