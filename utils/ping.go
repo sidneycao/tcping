@@ -21,6 +21,7 @@ type Ping struct {
 }
 
 func (p *Ping) Stop() {
+	// 只关闭一次
 	p.stopOnce.Do(func() {
 		close(p.stopChan)
 	})
@@ -30,30 +31,46 @@ func (p *Ping) Done() <-chan struct{} {
 	return p.stopChan
 }
 
+func (p *Ping) logSts(sts *Stat) {
+
+}
+
 func (p *Ping) Ping() {
+	// 运行结束后调用Stop
+	// 关闭stopChan
 	defer p.Stop()
 
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
+	/**
 	go func() {
 		<-p.Done()
 		cancel()
 	}()
+	***/
 
+	// 初始化一个1us的定时器
 	timer := time.NewTimer(1)
 	defer timer.Stop()
 
 	stop := false
 	for !stop {
 		select {
+		// 定时器计时结束后，会向timer.C中发出信号
+		// 此时会进入这个case
 		case <-timer.C:
+			// 发起tcp连接，获得状态参数
 			sts := p.target.Connect(ctx)
 			fmt.Println(sts)
+
+			//
 			if p.total++; p.counter > 0 && p.total > p.counter-1 {
 				stop = true
 			}
+			// 将定时器设置为参数中的时间间隔
 			timer.Reset(p.target.interval)
+		// stopChan关闭后，会进入这个case
 		case <-p.Done():
 			stop = true
 		}

@@ -14,10 +14,10 @@ Examples:
     > tcping www.google.com 443  
   
 
-Flags:  
-  -c, --counters int      ping counter (default 4)  
-  -h, --help              help for tcping  
-  -i, --interval string   ping interval (default "1s")  
-  -t, --timeout string    ping timeout (default "3s")  
+Flags:
+  -c, --counters(<= 0 will ping continuously) int   ping counter (default 4)
+  -h, --help                                        help for tcping
+  -i, --interval, the unit is seconds string        ping interval (default "1")
+  -t, --timeout, the unit is seconds string         ping timeout (default "3") 
 ```
 -->
