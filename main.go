@@ -61,7 +61,7 @@ var rCmd = cobra.Command{
 
 func init() {
 	//rCmd.Flags().IntVarP(&port, "port", "p", 80, "port")
-	rCmd.Flags().IntVarP(&counters, "counters(<= 0 will ping continuously)", "c", utils.DCounters, "ping counter")
+	rCmd.Flags().IntVarP(&counters, "counters", "c", utils.DCounters, "ping counter(if <= 0 will ping continuously)")
 	rCmd.Flags().StringVarP(&interval, "interval, the unit is seconds", "i", "1", "ping interval")
 	rCmd.Flags().StringVarP(&timeout, "timeout, the unit is seconds", "t", "3", "ping timeout")
 }
