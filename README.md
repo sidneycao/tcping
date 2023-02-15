@@ -14,8 +14,8 @@ Examples:
   
 
 Flags:
-  -c, --counters(<= 0 will ping continuously) int   ping counter (default 4)
-  -h, --help                                        help for tcping
-  -i, --interval, the unit is seconds string        ping interval (default "1")
-  -t, --timeout, the unit is seconds string         ping timeout (default "3") 
+  -c, --counters int      ping counter(if <= 0 will ping continuously) (default 4)
+  -h, --help              help for tcping
+  -i, --interval string   ping interval, the unit is seconds (default "1")
+  -t, --timeout string    ping timeout, the unit is seconds (default "3")
 ```
