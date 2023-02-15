@@ -49,11 +49,13 @@ var rCmd = cobra.Command{
 		pinger := utils.NewPing(*t, counters)
 		s := make(chan os.Signal, 1)
 		signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
+		fmt.Println("--- tcping starting ---")
 		go pinger.Ping()
 		select {
 		case <-s:
 		case <-pinger.Done():
 		}
+		pinger.Summarize()
 	},
 }
 
