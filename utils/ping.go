@@ -3,6 +3,7 @@ package utils
 import (
 	"context"
 	"fmt"
+	"io"
 	"math"
 	"sync"
 	"time"
@@ -12,6 +13,8 @@ type Ping struct {
 	Target   Target        //tcp target
 	stopOnce sync.Once     //stop once
 	stopChan chan struct{} // stop chan
+
+	out io.Writer //结果输出到哪里
 
 	MinDuration   time.Duration // ping的最小时间
 	MaxDuration   time.Duration // ping的最大时间
@@ -48,15 +51,15 @@ func (p *Ping) logSts(sts *Stat) {
 
 	if sts.Error != nil {
 		p.Failed++
-		fmt.Printf("Ping %s:%s(%s) %s(%s) - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, sts.Error.Error(), Round(sts.Duration, 3))
+		fmt.Fprintf(p.out, "Ping %s:%s(%s) %s(%s) - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, sts.Error.Error(), Round(sts.Duration, 3))
 	} else {
-		fmt.Printf("Ping %s:%s(%s) %s - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, Round(sts.Duration, 3))
+		fmt.Fprintf(p.out, "Ping %s:%s(%s) %s - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, Round(sts.Duration, 3))
 	}
 
 }
 
 func (p *Ping) Summarize() {
-	fmt.Printf(
+	fmt.Fprintf(p.out,
 		`--- tcping statistics ---
 %d probes sent, %d successful, %d failed.
 round-trip min/avg/max = %s/%s/%s
@@ -106,10 +109,11 @@ func (p *Ping) Ping() {
 	}
 }
 
-func NewPing(target Target, counter int) *Ping {
+func NewPing(target Target, out io.Writer, counter int) *Ping {
 	return &Ping{
 		Target:   target,
-		Counter:  counter,
 		stopChan: make(chan struct{}),
+		out:      out,
+		Counter:  counter,
 	}
 }

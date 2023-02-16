@@ -47,7 +47,7 @@ var rCmd = cobra.Command{
 			return
 		}
 		t := utils.NewTarget(host, port, timeout, interval)
-		pinger := utils.NewPing(*t, counters)
+		pinger := utils.NewPing(*t, os.Stdin, counters)
 		s := make(chan os.Signal, 1)
 		signal.Notify(s, syscall.SIGINT, syscall.SIGTERM)
 		fmt.Println("--- tcping starting ---")
