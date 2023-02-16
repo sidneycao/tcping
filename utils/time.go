@@ -11,7 +11,7 @@ var divs = []time.Duration{
 	time.Duration(1000),
 }
 
-func round(d time.Duration, digits int) time.Duration {
+func Round(d time.Duration, digits int) time.Duration {
 	switch {
 	case d > time.Second:
 		d = d.Round(time.Second / divs[digits])

@@ -48,9 +48,9 @@ func (p *Ping) logSts(sts *Stat) {
 
 	if sts.Error != nil {
 		p.Failed++
-		fmt.Printf("Ping %s:%s(%s) %s(%s) - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, sts.Error.Error(), round(sts.Duration, 3))
+		fmt.Printf("Ping %s:%s(%s) %s(%s) - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, sts.Error.Error(), Round(sts.Duration, 3))
 	} else {
-		fmt.Printf("Ping %s:%s(%s) %s - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, round(sts.Duration, 3))
+		fmt.Printf("Ping %s:%s(%s) %s - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, Round(sts.Duration, 3))
 	}
 
 }
@@ -60,7 +60,7 @@ func (p *Ping) Summarize() {
 		`--- tcping statistics ---
 %d probes sent, %d successful, %d failed.
 round-trip min/avg/max = %s/%s/%s
-`, p.Total, p.Total-p.Failed, p.Failed, round(p.MinDuration, 3), round(p.TotalDuration/time.Duration(p.Total), 3), round(p.MaxDuration, 3))
+`, p.Total, p.Total-p.Failed, p.Failed, Round(p.MinDuration, 3), Round(p.TotalDuration/time.Duration(p.Total), 3), Round(p.MaxDuration, 3))
 }
 
 func (p *Ping) Ping() {
