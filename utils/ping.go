@@ -9,16 +9,16 @@ import (
 )
 
 type Ping struct {
-	target   Target        //tcp target
+	Target   Target        //tcp target
 	stopOnce sync.Once     //stop once
 	stopChan chan struct{} // stop chan
 
-	minDuration   time.Duration // ping的最小时间
-	maxDuration   time.Duration // ping的最大时间
-	totalDuration time.Duration // ping的总花费时间
-	counter       int           // 需要ping的次数
-	total         int           // ping的总次数
-	failed        int           // ping失败的次数
+	MinDuration   time.Duration // ping的最小时间
+	MaxDuration   time.Duration // ping的最大时间
+	TotalDuration time.Duration // ping的总花费时间
+	Counter       int           // 需要ping的次数
+	Total         int           // ping的总次数
+	Failed        int           // ping失败的次数
 }
 
 func (p *Ping) Stop() {
@@ -33,13 +33,13 @@ func (p *Ping) Done() <-chan struct{} {
 }
 
 func (p *Ping) logSts(sts *Stat) {
-	if sts.Duration < p.minDuration {
-		p.minDuration = sts.Duration
+	if sts.Duration < p.MinDuration {
+		p.MinDuration = sts.Duration
 	}
-	if sts.Duration > p.maxDuration {
-		p.maxDuration = sts.Duration
+	if sts.Duration > p.MaxDuration {
+		p.MaxDuration = sts.Duration
 	}
-	p.totalDuration += sts.Duration
+	p.TotalDuration += sts.Duration
 
 	cSts := "failed"
 	if sts.Connected {
@@ -47,10 +47,10 @@ func (p *Ping) logSts(sts *Stat) {
 	}
 
 	if sts.Error != nil {
-		p.failed++
-		fmt.Printf("Ping %s:%s(%s) %s(%s) - time=%s\n", p.target.host, p.target.port, sts.Address, cSts, sts.Error.Error(), round(sts.Duration, 3))
+		p.Failed++
+		fmt.Printf("Ping %s:%s(%s) %s(%s) - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, sts.Error.Error(), round(sts.Duration, 3))
 	} else {
-		fmt.Printf("Ping %s:%s(%s) %s - time=%s\n", p.target.host, p.target.port, sts.Address, cSts, round(sts.Duration, 3))
+		fmt.Printf("Ping %s:%s(%s) %s - time=%s\n", p.Target.host, p.Target.port, sts.Address, cSts, round(sts.Duration, 3))
 	}
 
 }
@@ -60,7 +60,7 @@ func (p *Ping) Summarize() {
 		`--- tcping statistics ---
 %d probes sent, %d successful, %d failed.
 round-trip min/avg/max = %s/%s/%s
-`, p.total, p.total-p.failed, p.failed, round(p.minDuration, 3), round(p.totalDuration/time.Duration(p.total), 3), round(p.maxDuration, 3))
+`, p.Total, p.Total-p.Failed, p.Failed, round(p.MinDuration, 3), round(p.TotalDuration/time.Duration(p.Total), 3), round(p.MaxDuration, 3))
 }
 
 func (p *Ping) Ping() {
@@ -84,20 +84,20 @@ func (p *Ping) Ping() {
 	defer timer.Stop()
 
 	stop := false
-	p.minDuration = time.Duration(math.MaxInt64)
+	p.MinDuration = time.Duration(math.MaxInt64)
 	for !stop {
 		select {
 		// 定时器计时结束后，会向timer.C中发出信号
 		// 此时会进入这个case
 		case <-timer.C:
 			// 发起tcp连接，获得状态参数
-			sts := p.target.Connect(ctx)
+			sts := p.Target.Connect(ctx)
 			p.logSts(sts)
-			if p.total++; p.counter > 0 && p.total > p.counter-1 {
+			if p.Total++; p.Counter > 0 && p.Total > p.Counter-1 {
 				stop = true
 			}
 			// 将定时器设置为参数中的时间间隔
-			timer.Reset(p.target.interval)
+			timer.Reset(p.Target.interval)
 		// stopChan关闭后，会进入这个case
 		case <-p.Done():
 			stop = true
@@ -108,8 +108,8 @@ func (p *Ping) Ping() {
 
 func NewPing(target Target, counter int) *Ping {
 	return &Ping{
-		target:   target,
-		counter:  counter,
+		Target:   target,
+		Counter:  counter,
 		stopChan: make(chan struct{}),
 	}
 }
