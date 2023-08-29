@@ -6,7 +6,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/SidneyCao/tcping/utils"
+	"github.com/sidneycao/tcping/utils"
 
 	"github.com/spf13/cobra"
 )
